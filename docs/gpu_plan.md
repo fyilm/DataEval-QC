@@ -14,9 +14,12 @@
 
 | 场景 | 显卡规格 | 数量 | 预计耗时 |
 |---|---|---|---|
-| **最小可行**（只跑分类训练 + 消融 + 校准） | RTX 4090 24GB（或 A100 40GB / RTX 3090） | **1 张** | 约 0.5–1 小时 |
-| **推荐配置**（含种子并行，含 VLM 预标注） | RTX 4090 24GB | **2 张** | 约 0.5 小时 + 预标注 1.5 小时 |
+| **最小可行**（只跑分类训练 + 消融 + 校准） | RTX 4090 24GB（或 A100 40GB / RTX 3090） | **1 张** | 约 1–1.5 小时 |
+| **推荐配置**（含种子并行，含 VLM 预标注） | RTX 4090 24GB | **2 张** | 约 0.75 小时 + 预标注 1.5 小时 |
 | **完整配置**（再含 SDXL 生成第三源） | RTX 4090 24GB | **2 张** | 上述 + 生成约 2–3 小时 |
+
+> 作为对照：**同样 30 组在 CPU 上约需 26 小时**（实测外推，见 §3.3），这也是本仓库
+> 拆出 `configs/ablation_cpu.yaml` 只跑单骨干的原因。
 
 - 显存下限由 **Qwen2.5-VL** 决定，不是分类模型：分类模型在 160px/batch64 下 6GB 显存就够。
 - **16GB 显存卡（如 RTX 4080 / A4000）也能跑完分类消融**，但跑不了 7B 级别的 VLM 预标注，只能退到 3B 或 CLIP。
@@ -80,16 +83,47 @@
 
 两者合计 **CPU 全量约 9 小时**。这就是我最终决定"跑全量不砍档"但仍需要 GPU 的原因 —— 换卡后这个时间能压到 1 小时内。
 
-### 3.3 换到 GPU 后的推算
+### 3.3 CPU 实测耗时（原始依据）
 
-RTX 4090 相对这款 CPU，在小模型 + 小分辨率（160px）场景下，经验加速比约 **20–30 倍（mobilenet）/ 40–60 倍（efficientnet）**。取保守值 20× 和 40×：
+`r=0` 组实测【实测】：895 张 × 10 epochs = 8950 samples，`train_seconds = 375.8`，
+即 **训练吞吐约 23.8 samples/s**。
 
-| 模型 | CPU 30 组内耗时 | GPU 单卡推算 | 2 卡并行推算 |
+注意这比 §3.1 的推理吞吐（239 img/s）低一个数量级，不只是"反向传播约 3 倍"的经验值 ——
+160px 小图下 DataLoader 解码与增广的 CPU 开销占了大头。用推理吞吐直接估训练时间会严重低估。
+
+按各档训练集规模外推，每 seed 的样本量：
+
+| r | 训练集 | 每 seed 样本量（×10 epochs） |
+|---|---|---|
+| 0.00 | 895 | 8950 |
+| 0.25 | 1193 | 11930 |
+| 0.50 | 1790 | 17900 |
+| 0.75 | 3580 | 35800 |
+| 1.00 | 3580 | 35800 |
+| **合计/seed** | | **110380** |
+
+30 组 = 3 seed × 2 模型 = **331140 samples**。
+
+- mobilenet（23.8 samples/s）：331140 / 2 / 23.8 ≈ **3.9 小时**（两个模型各占一半）
+- efficientnet（推理慢 5.86 倍，训练同比例外推 ≈ 4.06 samples/s）：**约 22.7 小时**
+- **CPU 全量合计约 26 小时**
+
+### 3.4 换到 GPU 后的推算
+
+小模型 + 小分辨率场景下，RTX 4090 相对这款 CPU 的经验加速比约 **15–25 倍**。
+注意 160px 下 GPU 利用率偏低，数据加载可能成为瓶颈，实际可能落在 10–20 倍。
+
+| 模型 | CPU 耗时【实测外推】 | GPU 单卡推算 | 2 卡并行推算 |
 |---|---|---|---|
-| mobilenet_v3_small | 2.3 h | **约 7 分钟** | 约 4 分钟 |
-| efficientnet_b0 | 7 h | **约 11 分钟** | 约 6 分钟 |
+| mobilenet_v3_small（15 组） | 3.9 h | 约 10–23 分钟 | 约 5–12 分钟 |
+| efficientnet_b0（15 组） | 22.7 h | 约 55–135 分钟 | 约 28–68 分钟 |
+| **合计 30 组** | **26.6 h** | **约 1–2.6 小时** | **约 0.5–1.3 小时** |
 
-**推算依据与不确定性：** 160px 小分辨率下 GPU 的利用率偏低，数据加载和 CPU 预处理可能成为瓶颈，实际加速比可能落在 10–20× 而不是 20–60×。所以 §1 里写"0.5–1 小时"是留了余量的说法，**不是 18 分钟**。等本机 CPU 全量跑完后，我会用真实 wall-clock 反推校准（见 §7）。
+**推算依据与不确定性：** 加速比是经验值，未在本机实测（本机无 NVIDIA 显卡）。
+§1 表格里的"1–1.5 小时"取的是偏保守的中间值。若 GPU 机器上数据加载成为瓶颈，
+可把 `batch_size` 调大或 `num_workers` 调高来缓解。
+
+> 在真正跑过 GPU 之前，以上均为推算；跑完后请回填 §8 校准记录，把推算值替换为实测值。
 
 ---
 
@@ -187,11 +221,15 @@ uv run python -m src.evalset
 # 3. 吞吐基准（先跑，用它定档）
 uv run python -m src.run_exp --mode benchmark
 
-# 4. 全量消融（30 组；双卡时用 CUDA_VISIBLE_DEVICES 拆 seed）
+# 4. 全量消融（30 组）
 uv run python -m src.run_exp --config configs/ablation.yaml --mode grid
-#   双卡拆分示例：
-#   CUDA_VISIBLE_DEVICES=0 uv run python -m src.run_exp --config configs/ablation.yaml --mode grid --seed 42
-#   CUDA_VISIBLE_DEVICES=1 uv run python -m src.run_exp --config configs/ablation.yaml --mode grid --seed 43
+#   双卡并行：按 seed 拆开，各自写同一份 results，已完成的会自动跳过
+#   CUDA_VISIBLE_DEVICES=0 uv run python -m src.run_exp --config configs/ablation.yaml --mode grid &
+#   CUDA_VISIBLE_DEVICES=1 uv run python -m src.run_exp --config configs/ablation.yaml --mode grid &
+#   wait
+
+# 4'. CPU 上请改用单骨干配置（15 组，约 4 小时；跨模型对比留给 GPU）
+#   uv run python -m src.run_exp --config configs/ablation_cpu.yaml --mode grid
 
 # 5. 校准（在最佳档位上做）
 uv run python -m src.calibrate --tag best
@@ -211,8 +249,9 @@ uv run python -m src.label_vlm --backend auto --limit 400
 
 | 日期 | 事件 | 影响 |
 |---|---|---|
-| 2026-09-28 | 本机 CPU 实测吞吐基线（239 / 40.8 img/s） | §3.1 数字 |
-| 待补充 | 本机 CPU 全量 30 组跑完，拿到真实 wall-clock | 校准 §3.3 的加速比推算 |
-| 待补充 | GPU 机器上实测 | 回填 §1 表格为【实测】 |
+| 2026-09-28 | 本机 CPU 实测推理吞吐（mobilenet 239 / efficientnet 40.8 img/s） | §3.1 数字 |
+| 2026-09-28 | 实测训练吞吐 23.8 samples/s（r=0 组 8950 samples / 375.8 s） | §3.3 数字；据此发现"用推理吞吐估训练"会低估 10 倍 |
+| 2026-09-28 | 据此外推 CPU 全量 30 组约 26 小时，判定不可行 | 拆出 `configs/ablation_cpu.yaml`；§1 时间改为 1–1.5 小时 |
+| 待补充 | GPU 机器上实测 30 组真实耗时 | 把 §3.4 的推算替换为实测，§1 表格改为【实测】 |
 
 > 在拿到 CPU 全量真实耗时前，§1 的"0.5–1 小时"是**保守推算**，不是承诺值。

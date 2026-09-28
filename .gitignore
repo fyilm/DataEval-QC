@@ -24,6 +24,11 @@ data/aigc/
 data/eval/eval_v1.csv
 data/review_queue.csv
 
+# 标注任务与结果：含个人标注数据，用 src.agreement --export 可重建
+data/annotation/
+# 抽样样本的真实标签：入库会让标注员看到答案，破坏双盲，必须排除
+reports/annotation_gt.json
+
 # 模型权重缓存（CLIP 等），按需从 HF 拉取
 .cache/
 

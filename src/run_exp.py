@@ -226,10 +226,35 @@ def cmd_grid(cfg: dict[str, Any]) -> int:
     print(f"[grid] 共 {total} 次训练（{len(models)} 模型 × {len(ratios)} 占比 × {len(seeds)} seed）")
     RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
 
+    # 断点续跑：已成功写入结果的组合直接跳过。
+    # CPU 上全量要十几小时，中断一次就得从头再来代价太大；
+    # GPU 上同理，遇到某组 OOM 也能修完接着跑。
+    existing: set[str] = set()
+    if RESULTS_PATH.exists():
+        with RESULTS_PATH.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    d = json.loads(line)
+                except Exception:  # noqa: BLE001
+                    continue
+                if "error" not in d and d.get("exp_id"):
+                    existing.add(d["exp_id"])
+    if existing:
+        print(f"[grid] 检测到 {len(existing)} 组已有结果，将跳过")
+
     done = 0
+    skipped = 0
     for m, r in combos:
         for s in seeds:
             exp_id = f"{m}_r{int(round(r*100)):03d}_s{s}"
+            if exp_id in existing:
+                skipped += 1
+                done += 1
+                print(f"  [skip {done}/{total}] {exp_id} 已有结果")
+                continue
             cfg_i = dict(cfg)
             cfg_i["model"] = m
             cfg_i["ratio"] = r
@@ -248,7 +273,7 @@ def cmd_grid(cfg: dict[str, Any]) -> int:
                 )
             else:
                 print(f"  [{done}/{total}] {exp_id} 失败")
-    print(f"[grid] 完成，结果 -> {RESULTS_PATH}")
+    print(f"[grid] 完成（新跑 {done - skipped} 组，跳过 {skipped} 组），结果 -> {RESULTS_PATH}")
     return 0
 
 

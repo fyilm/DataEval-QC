@@ -1,0 +1,28 @@
+# CPU 版消融配置：只跑 mobilenet_v3_small。
+#
+# 为什么单独拆一份：
+#   本机实测 mobilenet 训练吞吐约 24 samples/s（895 张 × 10 epochs 用 376 秒），
+#   efficientnet_b0 还要再慢 2-3 倍。两个骨干 × 5 档 × 3 seed = 30 组在 CPU 上
+#   需要约 14 小时，不现实；而同样的 30 组在 RTX 4090 上只要 0.5-1 小时。
+#   所以：CPU 上先跑通单骨干全档位（15 组，约 4 小时）拿到完整的占比曲线与
+#   3 seed 方差，跨模型对比留给 GPU 跑 configs/ablation.yaml（30 组）。
+#
+# 两份配置的 epochs / img_size / lr / ratios / seeds 完全一致，因此结果可直接合并对比。
+
+device: ""
+
+models:
+  - mobilenet_v3_small
+
+ratios: [0.0, 0.25, 0.5, 0.75, 1.0]
+
+seeds: [42, 43, 44]
+
+img_size: 160
+epochs: 10
+batch_size: 64
+lr: 0.001
+
+recall_floor: 0.95
+
+log_every: 0

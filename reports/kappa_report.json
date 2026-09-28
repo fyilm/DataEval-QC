@@ -1,0 +1,12 @@
+{
+  "per_class": {
+    "low_res": 0.9771,
+    "blur": 0.8643,
+    "over_expo": 1.0,
+    "dark": 0.9771,
+    "occlusion": 1.0,
+    "noise": 1.0
+  },
+  "macro_kappa": 0.9698,
+  "n_samples": 149
+}
