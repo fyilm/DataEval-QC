@@ -1,0 +1,44 @@
+# GPU 瓶颈诊断配置。
+#
+# 背景：CPU 上的消融已经跑完（mobilenet × 5 档 × 3 seed），合成占比曲线为
+#   r=0.00 -> 0.0000 / 0.25 -> 0.3747 / 0.50 -> 0.4979 / 0.75 -> 0.5481 / 1.00 -> 0.5369
+# 峰值在 r=0.75，且**再往上堆合成数据反而下降**。也就是说占比已经不是瓶颈，
+# 继续在这条轴上做消融没有意义。离任务书 macro-F1 >= 0.85 还差约 0.30，
+# 差距只能来自训练设置本身。
+#
+# 所以这份配置固定 r=0.75（当前最佳档），只扫另外三个因素：
+#   1. img_size 160 -> 224   分辨率会抹掉高频，而 blur / low_res 的判据恰在高频上
+#      （low_res 召回只有 0.845，很可能是被输入分辨率卡住的）
+#   2. epochs 10 -> 30       10 轮可能欠拟合
+#   3. 模型容量               mobilenet_v3_small -> efficientnet_b0
+#
+# 先跑单 seed 做定位（快），定位到主因后再用 3 seed 复现。
+# 用法：uv run python -m src.run_exp --config configs/tune_gpu.yaml --mode tune
+
+device: ""
+
+# 公共默认值，variants 里未写的字段沿用这里
+defaults:
+  model: mobilenet_v3_small
+  ratio: 0.75
+  img_size: 160
+  epochs: 10
+  batch_size: 64
+  lr: 0.001
+  seeds: [42]
+  recall_floor: 0.95
+  log_every: 0
+
+variants:
+  - tag: base            # 基线：确认能复现 CPU 上的 0.548
+  - tag: s224            # 单独看分辨率的贡献
+    img_size: 224
+  - tag: e30             # 单独看训练轮数的贡献
+    epochs: 30
+  - tag: s224_e30        # 两者叠加（预期最优）
+    img_size: 224
+    epochs: 30
+  - tag: eff_s224_e30    # 再叠模型容量
+    model: efficientnet_b0
+    img_size: 224
+    epochs: 30

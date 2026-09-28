@@ -221,8 +221,18 @@ def write_eval_jsonl(records: list[dict[str, Any]], path: pathlib.Path = EVAL_JS
     所以机器可读的规范格式必须用 .jsonl，CSV 只作为给人看的导出物。
     """
     path.parent.mkdir(parents=True, exist_ok=True)
+    seen: set[str] = set()
+    written = 0
+    dropped = 0
     with path.open("w", encoding="utf-8") as f:
         for r in records:
+            # 兜底去重：同一张图在评测集里出现两次会让它的权重翻倍，
+            # 指标失真。抽样端已排除长尾，这里再兜一道。
+            if r["file"] in seen:
+                dropped += 1
+                continue
+            seen.add(r["file"])
+            written += 1
             defect, scene, difficulty = cell_of(r)
             f.write(
                 json.dumps(
@@ -237,6 +247,8 @@ def write_eval_jsonl(records: list[dict[str, Any]], path: pathlib.Path = EVAL_JS
                 )
                 + "\n"
             )
+    if dropped:
+        print(f"[evalset] 写入 {written} 条，去重丢弃 {dropped} 条重复样本")
     return path
 
 
@@ -293,7 +305,16 @@ def main(argv: list[str] | None = None) -> int:
         print("[evalset] manifest 为空")
         return 1
 
-    pool = [r for r in records if r.get("split") == "eval" and not r.get("dedup_removed")]
+    # 必须排除长尾样本：本脚本可重复运行，而长尾样本在首次运行后已被写进
+    # manifest（split=eval）。若不排除，第二次运行时它们会进入抽样池，被分层
+    # 抽样抽中一部分，随后 build_longtail 又按固定文件名生成一遍同名样本，
+    # 导致同一张图在评测集里出现两次 —— 实测 1400 行里只有 1277 个唯一文件，
+    # 123 张被重复计权。
+    pool = [
+        r for r in records
+        if r.get("split") == "eval" and not r.get("dedup_removed")
+        and not r.get("eval_longtail")
+    ]
     if not pool:
         print("[evalset] eval 池为空，请先运行 split")
         return 1

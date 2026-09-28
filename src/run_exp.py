@@ -229,19 +229,7 @@ def cmd_grid(cfg: dict[str, Any]) -> int:
     # 断点续跑：已成功写入结果的组合直接跳过。
     # CPU 上全量要十几小时，中断一次就得从头再来代价太大；
     # GPU 上同理，遇到某组 OOM 也能修完接着跑。
-    existing: set[str] = set()
-    if RESULTS_PATH.exists():
-        with RESULTS_PATH.open(encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    d = json.loads(line)
-                except Exception:  # noqa: BLE001
-                    continue
-                if "error" not in d and d.get("exp_id"):
-                    existing.add(d["exp_id"])
+    existing = _existing_exp_ids()
     if existing:
         print(f"[grid] 检测到 {len(existing)} 组已有结果，将跳过")
 
@@ -277,10 +265,97 @@ def cmd_grid(cfg: dict[str, Any]) -> int:
     return 0
 
 
+def _existing_exp_ids() -> set[str]:
+    """已成功完成的 exp_id 集合，用于断点续跑。"""
+    existing: set[str] = set()
+    if RESULTS_PATH.exists():
+        with RESULTS_PATH.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    d = json.loads(line)
+                except Exception:  # noqa: BLE001
+                    continue
+                if "error" not in d and d.get("exp_id"):
+                    existing.add(d["exp_id"])
+    return existing
+
+
+def cmd_tune(cfg: dict[str, Any]) -> int:
+    """跑一组"变体"实验，用于定位指标瓶颈。
+
+    与 grid 的区别：grid 扫 (模型 × 占比 × seed)，tune 固定其它因素、逐个改动
+    单个设置（分辨率 / 轮数 / 骨干），每个变体有独立 tag，最后打印横向对比。
+    """
+    defaults = cfg.get("defaults", {})
+    variants = cfg.get("variants", [])
+    if not variants:
+        print("[tune] 配置里没有 variants")
+        return 1
+
+    RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    existing = _existing_exp_ids()
+    if existing:
+        print(f"[tune] 检测到 {len(existing)} 组已有结果，将跳过")
+
+    total = sum(len(v.get("seeds", defaults.get("seeds", [42]))) for v in variants)
+    print(f"[tune] 共 {total} 次训练（{len(variants)} 个变体）")
+    done = 0
+    skipped = 0
+    rows: list[dict[str, Any]] = []
+
+    for v in variants:
+        tag = v.get("tag", "v")
+        c = dict(defaults)
+        c.update({k: val for k, val in v.items() if k != "tag"})
+        seeds = c.get("seeds", [42])
+        for s in seeds:
+            exp_id = f"tune_{tag}_s{s}"
+            if exp_id in existing:
+                skipped += 1
+                done += 1
+                print(f"  [skip {done}/{total}] {exp_id} 已有结果")
+                continue
+            cfg_i = {k: val for k, val in c.items() if k != "seeds"}
+            try:
+                res = run_single(cfg_i, s, exp_id)
+            except Exception as e:  # noqa: BLE001
+                print(f"  [FAIL] {exp_id}: {e}")
+                res = {"exp_id": exp_id, "error": str(e)}
+            with RESULTS_PATH.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(res, ensure_ascii=False) + "\n")
+            done += 1
+            if "error" not in res:
+                rows.append({
+                    "tag": tag,
+                    "img_size": res["img_size"],
+                    "epochs": res["epochs"],
+                    "macro_f1": res["eval"]["macro_f1"],
+                    "ece": res["eval"]["ece_multilabel"],
+                    "seconds": res["train_seconds"],
+                })
+                print(f"  [{done}/{total}] {exp_id}  macroF1={res['eval']['macro_f1']:.4f}  "
+                      f"ECE={res['eval']['ece_multilabel']:.4f}  ({res['train_seconds']}s)")
+
+    if rows:
+        print("\n[tune] 变体对比（按 macro-F1 排序）")
+        print(f"  {'tag':<16}{'img':>5}{'epochs':>8}{'macro-F1':>11}{'ECE':>9}{'耗时s':>9}")
+        for r in sorted(rows, key=lambda x: -x["macro_f1"]):
+            print(f"  {r['tag']:<16}{r['img_size']:>5}{r['epochs']:>8}"
+                  f"{r['macro_f1']:>11.4f}{r['ece']:>9.4f}{r['seconds']:>9.0f}")
+        best = max(rows, key=lambda x: x["macro_f1"])
+        print(f"\n[tune] 最佳变体：{best['tag']}（macro-F1 {best['macro_f1']:.4f}）")
+        print("[tune] 下一步：把该变体的设置写进 configs/ablation.yaml，用 3 seed 复现。")
+    print(f"\n[tune] 完成（新跑 {done - skipped} 组，跳过 {skipped} 组），结果 -> {RESULTS_PATH}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="实验入口")
     ap.add_argument("--config", default=str(CONFIGS_DIR / "ablation.yaml"))
-    ap.add_argument("--mode", choices=["grid", "benchmark", "single"], default="grid")
+    ap.add_argument("--mode", choices=["grid", "benchmark", "single", "tune"], default="grid")
     ap.add_argument("--model", default=None)
     ap.add_argument("--ratio", type=float, default=None)
     ap.add_argument("--seed", type=int, default=42)
@@ -291,6 +366,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.mode == "benchmark":
         return cmd_benchmark(cfg)
+    if args.mode == "tune":
+        return cmd_tune(cfg)
     if args.mode == "single":
         cfg["model"] = args.model or cfg.get("models", [MODELS[0]])[0]
         cfg["ratio"] = args.ratio if args.ratio is not None else cfg.get("ratios", [0.5])[0]
