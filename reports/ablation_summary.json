@@ -1,0 +1,83 @@
+{
+  "n_runs": 5,
+  "n_groups": 2,
+  "table": [
+    {
+      "model": "mobilenet_v3_small",
+      "ratio": 0.0,
+      "n_seeds": 3,
+      "n_train": 895,
+      "macro_f1_mean": 0.0,
+      "macro_f1_std": 0.0,
+      "ece_mean": 0.8072,
+      "brier_mean": 0.1928,
+      "recall_mean": {
+        "low_res": 0.0,
+        "blur": 0.0,
+        "over_expo": 0.0,
+        "dark": 0.0,
+        "occlusion": 0.0,
+        "noise": 0.0
+      },
+      "train_seconds_mean": 362.4
+    },
+    {
+      "model": "mobilenet_v3_small",
+      "ratio": 0.25,
+      "n_seeds": 2,
+      "n_train": 1193,
+      "macro_f1_mean": 0.3735,
+      "macro_f1_std": 0.0241,
+      "ece_mean": 0.5434,
+      "brier_mean": 0.198,
+      "recall_mean": {
+        "low_res": 0.8279,
+        "blur": 0.8824,
+        "over_expo": 0.9551,
+        "dark": 0.9247,
+        "occlusion": 0.9765,
+        "noise": 0.9923
+      },
+      "train_seconds_mean": 373.9
+    }
+  ],
+  "best_group": {
+    "model": "mobilenet_v3_small",
+    "ratio": 0.25,
+    "n_seeds": 2,
+    "n_train": 1193,
+    "macro_f1_mean": 0.3735,
+    "macro_f1_std": 0.0241,
+    "ece_mean": 0.5434,
+    "brier_mean": 0.198,
+    "recall_mean": {
+      "low_res": 0.8279,
+      "blur": 0.8824,
+      "over_expo": 0.9551,
+      "dark": 0.9247,
+      "occlusion": 0.9765,
+      "noise": 0.9923
+    },
+    "train_seconds_mean": 373.9
+  },
+  "acceptance_checks": [
+    {
+      "item": "macro-F1 ≥ 0.85",
+      "target": 0.85,
+      "best": 0.3735,
+      "passed": false
+    },
+    {
+      "item": "blur 召回 ≥ 0.95",
+      "target": 0.95,
+      "best": 0.8824,
+      "passed": false
+    },
+    {
+      "item": "low_res 召回 ≥ 0.95",
+      "target": 0.95,
+      "best": 0.8279,
+      "passed": false
+    }
+  ]
+}
