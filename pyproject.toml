@@ -1,0 +1,45 @@
+[project]
+name = "dataeval-qc"
+version = "0.1.0"
+description = "合成数据驱动的视觉质检：数据集建设与评测体系"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "opencv-python-headless>=4.10",
+    "albumentations>=1.4",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "matplotlib>=3.9",
+    "scikit-learn>=1.5",
+    "imagehash>=4.3",
+    "pillow>=10.4",
+    "pyarrow>=17.0",
+    "pyyaml>=6.0",
+    "tqdm>=4.66",
+    "open-clip-torch>=2.24",
+]
+
+# VLM 本地推理（租用显卡时启用）
+[project.optional-dependencies]
+vlm = [
+    "transformers>=4.44",
+    "accelerate>=0.34",
+    "qwen-vl-utils>=0.0.8",
+    "diffusers>=0.31",
+]
+
+[project.scripts]
+dataeval-qc = "src.cli:main"
+
+# 默认走 PyTorch CPU 索引：本机无 NVIDIA 显卡，避免拉取约 2.5GB 的 CUDA 依赖。
+# 在租用的 GPU 机器上，sync 之后执行 README「GPU 机器部署」一节的两行命令即可换成 CUDA 版。
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

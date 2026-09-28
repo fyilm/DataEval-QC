@@ -1,0 +1,11 @@
+{
+  "threshold": 4,
+  "total": 9500,
+  "removed": 0,
+  "kept": 9500,
+  "same_origin_pairs_skipped": 15550,
+  "cross_origin_dup_pairs": 0,
+  "exact_sha1_dup_groups": 5,
+  "removed_by_source": {},
+  "removed_detail_head": []
+}

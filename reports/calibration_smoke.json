@@ -1,0 +1,20 @@
+{
+  "tag": "smoke",
+  "temperature": 1.9317,
+  "val_nll_after_fit": 0.55157,
+  "before": {
+    "ece": 0.5985,
+    "brier": 0.1897,
+    "macro_f1": 0.4156
+  },
+  "after": {
+    "ece": 0.5254,
+    "brier": 0.185,
+    "macro_f1": 0.4156
+  },
+  "ece_reduction": 0.0731,
+  "figures": {
+    "before": "reports\\figures\\reliability_smoke_before.png",
+    "after": "reports\\figures\\reliability_smoke_after.png"
+  }
+}

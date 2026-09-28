@@ -1,0 +1,26 @@
+# 消融实验配置。
+# 改这里的任何数值都会改变实验口径；正式跑之前先 git commit 一次。
+
+# 设备：留空自动检测（无卡 -> cpu，有卡 -> cuda）
+device: ""
+
+# CPU 上先从这两个骨干跑；租到显卡后可把 resnet18 加回来
+models:
+  - mobilenet_v3_small
+  - efficientnet_b0
+
+# 合成数据占比档位（定义见 src/run_exp.py 顶部注释）
+ratios: [0.0, 0.25, 0.5, 0.75, 1.0]
+
+# 每组重复次数（任务书要求 3 次）
+seeds: [42, 43, 44]
+
+img_size: 160
+epochs: 10
+batch_size: 64
+lr: 0.001
+
+# 阈值搜索的召回约束：质检漏检代价高于误检
+recall_floor: 0.95
+
+log_every: 0

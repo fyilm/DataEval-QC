@@ -1,0 +1,296 @@
+{
+  "target": 1200,
+  "achieved": 1200,
+  "cells": 57,
+  "cell_stat": {
+    "blur|indoor|easy": {
+      "available": 9,
+      "quota": 9,
+      "taken": 9
+    },
+    "blur|indoor|hard": {
+      "available": 17,
+      "quota": 17,
+      "taken": 17
+    },
+    "blur|indoor|mid": {
+      "available": 13,
+      "quota": 13,
+      "taken": 13
+    },
+    "blur|night|easy": {
+      "available": 12,
+      "quota": 12,
+      "taken": 12
+    },
+    "blur|night|hard": {
+      "available": 23,
+      "quota": 23,
+      "taken": 23
+    },
+    "blur|night|mid": {
+      "available": 11,
+      "quota": 11,
+      "taken": 11
+    },
+    "blur|outdoor|easy": {
+      "available": 27,
+      "quota": 27,
+      "taken": 27
+    },
+    "blur|outdoor|hard": {
+      "available": 75,
+      "quota": 36,
+      "taken": 36
+    },
+    "blur|outdoor|mid": {
+      "available": 42,
+      "quota": 36,
+      "taken": 36
+    },
+    "dark|indoor|easy": {
+      "available": 11,
+      "quota": 11,
+      "taken": 11
+    },
+    "dark|indoor|hard": {
+      "available": 20,
+      "quota": 20,
+      "taken": 20
+    },
+    "dark|indoor|mid": {
+      "available": 8,
+      "quota": 8,
+      "taken": 8
+    },
+    "dark|night|easy": {
+      "available": 9,
+      "quota": 9,
+      "taken": 9
+    },
+    "dark|night|hard": {
+      "available": 19,
+      "quota": 19,
+      "taken": 19
+    },
+    "dark|night|mid": {
+      "available": 13,
+      "quota": 13,
+      "taken": 13
+    },
+    "dark|outdoor|easy": {
+      "available": 24,
+      "quota": 24,
+      "taken": 24
+    },
+    "dark|outdoor|hard": {
+      "available": 70,
+      "quota": 36,
+      "taken": 36
+    },
+    "dark|outdoor|mid": {
+      "available": 33,
+      "quota": 33,
+      "taken": 33
+    },
+    "low_res|indoor|easy": {
+      "available": 8,
+      "quota": 8,
+      "taken": 8
+    },
+    "low_res|indoor|hard": {
+      "available": 22,
+      "quota": 22,
+      "taken": 22
+    },
+    "low_res|indoor|mid": {
+      "available": 12,
+      "quota": 12,
+      "taken": 12
+    },
+    "low_res|night|easy": {
+      "available": 12,
+      "quota": 12,
+      "taken": 12
+    },
+    "low_res|night|hard": {
+      "available": 14,
+      "quota": 14,
+      "taken": 14
+    },
+    "low_res|night|mid": {
+      "available": 15,
+      "quota": 15,
+      "taken": 15
+    },
+    "low_res|outdoor|easy": {
+      "available": 32,
+      "quota": 32,
+      "taken": 32
+    },
+    "low_res|outdoor|hard": {
+      "available": 58,
+      "quota": 36,
+      "taken": 36
+    },
+    "low_res|outdoor|mid": {
+      "available": 45,
+      "quota": 36,
+      "taken": 36
+    },
+    "noise|indoor|easy": {
+      "available": 8,
+      "quota": 8,
+      "taken": 8
+    },
+    "noise|indoor|hard": {
+      "available": 8,
+      "quota": 8,
+      "taken": 8
+    },
+    "noise|indoor|mid": {
+      "available": 3,
+      "quota": 3,
+      "taken": 3
+    },
+    "noise|night|easy": {
+      "available": 13,
+      "quota": 13,
+      "taken": 13
+    },
+    "noise|night|hard": {
+      "available": 7,
+      "quota": 7,
+      "taken": 7
+    },
+    "noise|night|mid": {
+      "available": 10,
+      "quota": 10,
+      "taken": 10
+    },
+    "noise|outdoor|easy": {
+      "available": 26,
+      "quota": 26,
+      "taken": 26
+    },
+    "noise|outdoor|hard": {
+      "available": 27,
+      "quota": 27,
+      "taken": 27
+    },
+    "noise|outdoor|mid": {
+      "available": 37,
+      "quota": 36,
+      "taken": 36
+    },
+    "normal|indoor|none": {
+      "available": 47,
+      "quota": 37,
+      "taken": 37
+    },
+    "normal|night|none": {
+      "available": 54,
+      "quota": 36,
+      "taken": 36
+    },
+    "normal|outdoor|none": {
+      "available": 163,
+      "quota": 36,
+      "taken": 36
+    },
+    "occlusion|indoor|easy": {
+      "available": 10,
+      "quota": 10,
+      "taken": 10
+    },
+    "occlusion|indoor|hard": {
+      "available": 21,
+      "quota": 21,
+      "taken": 21
+    },
+    "occlusion|indoor|mid": {
+      "available": 9,
+      "quota": 9,
+      "taken": 9
+    },
+    "occlusion|night|easy": {
+      "available": 18,
+      "quota": 18,
+      "taken": 18
+    },
+    "occlusion|night|hard": {
+      "available": 29,
+      "quota": 29,
+      "taken": 29
+    },
+    "occlusion|night|mid": {
+      "available": 16,
+      "quota": 16,
+      "taken": 16
+    },
+    "occlusion|outdoor|easy": {
+      "available": 33,
+      "quota": 33,
+      "taken": 33
+    },
+    "occlusion|outdoor|hard": {
+      "available": 114,
+      "quota": 36,
+      "taken": 36
+    },
+    "occlusion|outdoor|mid": {
+      "available": 54,
+      "quota": 36,
+      "taken": 36
+    },
+    "over_expo|indoor|easy": {
+      "available": 10,
+      "quota": 10,
+      "taken": 10
+    },
+    "over_expo|indoor|hard": {
+      "available": 27,
+      "quota": 27,
+      "taken": 27
+    },
+    "over_expo|indoor|mid": {
+      "available": 13,
+      "quota": 13,
+      "taken": 13
+    },
+    "over_expo|night|easy": {
+      "available": 8,
+      "quota": 8,
+      "taken": 8
+    },
+    "over_expo|night|hard": {
+      "available": 20,
+      "quota": 20,
+      "taken": 20
+    },
+    "over_expo|night|mid": {
+      "available": 15,
+      "quota": 15,
+      "taken": 15
+    },
+    "over_expo|outdoor|easy": {
+      "available": 37,
+      "quota": 36,
+      "taken": 36
+    },
+    "over_expo|outdoor|hard": {
+      "available": 63,
+      "quota": 36,
+      "taken": 36
+    },
+    "over_expo|outdoor|mid": {
+      "available": 46,
+      "quota": 36,
+      "taken": 36
+    }
+  },
+  "underfilled_cells": {},
+  "seed": 42,
+  "longtail": 200,
+  "total": 1400
+}

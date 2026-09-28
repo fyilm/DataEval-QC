@@ -1,0 +1,12 @@
+# 冒烟测试配置：只验证训练->评测->阈值->校准全链路能跑通，不追求指标。
+# 跑法：uv run python -m src.run_exp --config configs/smoke.yaml --mode single --ratio 0.5
+device: ""
+models: [mobilenet_v3_small]
+ratios: [0.5]
+seeds: [42]
+img_size: 160
+epochs: 1
+batch_size: 64
+lr: 0.001
+recall_floor: 0.95
+log_every: 1

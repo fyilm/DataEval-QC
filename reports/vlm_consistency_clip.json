@@ -1,0 +1,27 @@
+{
+  "backend": "clip",
+  "sampled": 400,
+  "exact_match_rate": 0.0825,
+  "mean_iou": 0.2331,
+  "per_class_recall": {
+    "low_res": 0.5303,
+    "blur": 0.7193,
+    "over_expo": 0.2698,
+    "dark": 0.1408,
+    "occlusion": 0.4524,
+    "noise": 0.5479
+  },
+  "review_queue_size": 367,
+  "review_reduction": 0.0825,
+  "failure_modes": {
+    "clean_total": 70,
+    "clean_false_alarm": 67,
+    "clean_false_alarm_rate": 0.9571,
+    "defect_total": 330,
+    "defect_missed": 7,
+    "defect_missed_rate": 0.0212,
+    "mean_pred_labels": 1.81,
+    "mean_gt_labels": 1.035
+  },
+  "note": "一致率=精确匹配；IoU=多标签重合度；复核量下降比例=1-不一致数/抽样数。failure_modes 区分两类失败：干净帧误报(clean_false_alarm_rate)与缺陷帧漏检(defect_missed_rate)，后者在质检场景下代价更高。"
+}

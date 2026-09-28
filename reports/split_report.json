@@ -1,0 +1,43 @@
+{
+  "seed": 42,
+  "eval_target": 1400,
+  "ratios": {
+    "train": 0.7,
+    "val": 0.2,
+    "test": 0.10000000000000003
+  },
+  "eval": {
+    "origins": 221,
+    "samples": 1400,
+    "real": 221,
+    "procedural": 884,
+    "aigc": 295
+  },
+  "train": {
+    "origins": 895,
+    "samples": 5665,
+    "real": 895,
+    "procedural": 3580,
+    "aigc": 1190
+  },
+  "val": {
+    "origins": 255,
+    "samples": 1616,
+    "real": 255,
+    "procedural": 1020,
+    "aigc": 341
+  },
+  "test": {
+    "origins": 129,
+    "samples": 819,
+    "real": 129,
+    "procedural": 516,
+    "aigc": 174
+  },
+  "leakage_check": {
+    "passed": true,
+    "total_origins": 1500,
+    "leaked_origins": 0,
+    "examples": {}
+  }
+}

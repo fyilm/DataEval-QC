@@ -1,0 +1,17 @@
+{
+  "backend": "clip",
+  "sampled": 400,
+  "exact_match_rate": 0.0825,
+  "mean_iou": 0.2331,
+  "per_class_recall": {
+    "low_res": 0.5303,
+    "blur": 0.7193,
+    "over_expo": 0.2698,
+    "dark": 0.1408,
+    "occlusion": 0.4524,
+    "noise": 0.5479
+  },
+  "review_queue_size": 367,
+  "review_reduction": 0.0825,
+  "note": "一致率=精确匹配；IoU=多标签重合度；复核量下降比例=1-不一致数/抽样数"
+}

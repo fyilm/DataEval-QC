@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# ---------------------------------------------------------------------------
+# 三个数据源的图片：约 810MB，不入库。用 scripts/run_all.sh 重新生成即可。
+# 但以下内容必须入库：
+#   - data/manifest.jsonl     全量索引（5MB），换机器后靠它定位样本
+#   - data/eval/eval_v1.jsonl 冻结评测集清单，用于核对评测集是否变动
+#   - data/eval/longtail/     长尾补录图片，属于冻结评测集的一部分
+# ---------------------------------------------------------------------------
+data/real/
+data/procedural/
+data/aigc/
+
+# 导出物：可随时重新生成；且 .csv 在部分环境会被 DLP 加密
+data/eval/eval_v1.csv
+data/review_queue.csv
+
+# 模型权重缓存（CLIP 等），按需从 HF 拉取
+.cache/
+
+# 训练产物：体积大且可复现
+checkpoints/
+*.pt

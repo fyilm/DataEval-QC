@@ -1,0 +1,17 @@
+{
+  "device": "cpu",
+  "rows": [
+    {
+      "model": "mobilenet_v3_small",
+      "img_per_sec": 239.0,
+      "batch_size": 64,
+      "img_size": 160
+    },
+    {
+      "model": "efficientnet_b0",
+      "img_per_sec": 40.8,
+      "batch_size": 64,
+      "img_size": 160
+    }
+  ]
+}

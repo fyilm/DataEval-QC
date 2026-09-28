@@ -1,0 +1,41 @@
+{
+  "backend": "rule",
+  "sampled": 400,
+  "exact_match_rate": 0.195,
+  "mean_iou": 0.3548,
+  "per_class_recall": {
+    "low_res": 1.0,
+    "blur": 0.9123,
+    "over_expo": 0.1905,
+    "dark": 0.5211,
+    "occlusion": 0.0,
+    "noise": 0.0137
+  },
+  "review_queue_size": 322,
+  "review_reduction": 0.195,
+  "failure_modes": {
+    "clean_total": 70,
+    "clean_false_alarm": 9,
+    "clean_false_alarm_rate": 0.1286,
+    "defect_total": 330,
+    "defect_missed": 157,
+    "defect_missed_rate": 0.4758,
+    "mean_pred_labels": 0.84,
+    "mean_gt_labels": 1.035
+  },
+  "note": "一致率=精确匹配；IoU=多标签重合度；复核量下降比例=1-不一致数/抽样数。failure_modes 区分两类失败：干净帧误报(clean_false_alarm_rate)与缺陷帧漏检(defect_missed_rate)，后者在质检场景下代价更高。",
+  "thresholds": {
+    "blur_inv": 334.768,
+    "low_freq_ratio": 0.4807,
+    "bright": 175.8379,
+    "dark_inv": 56.7591,
+    "flat_area": 1.0,
+    "block_edge": 25.5363,
+    "blur_inv_scale": 1518.3212,
+    "low_freq_ratio_scale": 0.149,
+    "bright_scale": 62.3382,
+    "dark_inv_scale": 56.7406,
+    "flat_area_scale": 1.0,
+    "block_edge_scale": 15.9303
+  }
+}
