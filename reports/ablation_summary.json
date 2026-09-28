@@ -1,5 +1,5 @@
 {
-  "n_runs": 13,
+  "n_runs": 15,
   "n_groups": 5,
   "table": [
     {
@@ -81,21 +81,21 @@
     {
       "model": "mobilenet_v3_small",
       "ratio": 1.0,
-      "n_seeds": 1,
+      "n_seeds": 3,
       "n_train": 3580,
-      "macro_f1_mean": 0.5369,
-      "macro_f1_std": 0.0,
-      "ece_mean": 0.7325,
-      "brier_mean": 0.1282,
+      "macro_f1_mean": 0.5424,
+      "macro_f1_std": 0.0039,
+      "ece_mean": 0.733,
+      "brier_mean": 0.1259,
       "recall_mean": {
-        "low_res": 0.8512,
-        "blur": 0.9359,
-        "over_expo": 0.8504,
-        "dark": 0.7992,
-        "occlusion": 0.8587,
-        "noise": 0.8687
+        "low_res": 0.8822,
+        "blur": 0.9302,
+        "over_expo": 0.8234,
+        "dark": 0.8249,
+        "occlusion": 0.8563,
+        "noise": 0.879
       },
-      "train_seconds_mean": 512.1
+      "train_seconds_mean": 546.8
     }
   ],
   "best_group": {

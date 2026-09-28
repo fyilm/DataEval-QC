@@ -273,13 +273,15 @@ def write_eval_csv(records: list[dict[str, Any]], path: pathlib.Path = EVAL_CSV)
     return path
 
 
-def append_changelog(note: str, stats: dict[str, Any]) -> None:
+def append_changelog(note: str, stats: dict[str, Any], version: str = "v1") -> None:
     p = ROOT / "docs" / "evalset_changelog.md"
     p.parent.mkdir(parents=True, exist_ok=True)
     entry = (
-        f"\n## eval_v1 — {date.today().isoformat()}\n\n"
+        f"\n## eval_{version} — {date.today().isoformat()}\n\n"
         f"{note}\n\n"
         f"- 样本数：{stats.get('achieved', 0)}\n"
+        f"- 唯一文件数：{stats.get('unique_files', stats.get('total', 0))}\n"
+        f"- 长尾数：{stats.get('longtail', 0)}\n"
         f"- 分层格数：{stats.get('cells', 0)}\n"
         f"- 抽样 seed：{stats.get('seed', 42)}\n"
     )
@@ -294,6 +296,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--target", type=int, default=1200)
     ap.add_argument("--longtail", type=int, default=200)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--version", default="v1", help="评测集版本号，写入 changelog")
+    ap.add_argument("--note", default="", help="变更原因，写入 changelog（修复/补录等）")
     args = ap.parse_args(argv)
 
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
@@ -356,13 +360,15 @@ def main(argv: list[str] | None = None) -> int:
     report["seed"] = args.seed
     report["longtail"] = len(lt)
     report["total"] = len(all_eval)
+    report["unique_files"] = len({r["file"] for r in all_eval})
     from src.common import write_json
 
     write_json(report, ROOT / "reports" / "evalset_report.json")
-    append_changelog(
-        f"首次冻结。分层抽样 {len(picked)} 张 + 长尾补录 {len(lt)} 张，共 {len(all_eval)} 张。",
-        report,
+    note = args.note or (
+        f"分层抽样 {len(picked)} 张 + 长尾补录 {len(lt)} 张，"
+        f"共 {len(all_eval)} 张（唯一文件 {report['unique_files']} 张）。"
     )
+    append_changelog(note, report, args.version)
 
     print(
         f"[evalset] 分层抽样 {len(picked)}/{args.target}，长尾 {len(lt)}，合计 {len(all_eval)}\n"

@@ -139,6 +139,10 @@ def to_markdown(summary: dict[str, Any]) -> str:
         lines.append(f"| {c['item']} | {c['target']} | {best} | {'✅ 达标' if c['passed'] else '❌ 未达标'} |")
 
     lines.append("\n> 注：r=0 组训练集无正样本（真实帧全部是干净帧），macro-F1 为 0 属设计内的退化对照点。")
+    lines.append(">")
+    lines.append("> ⚠ **评测集版本**：以上结果基于修复前的 eval_v1，该版本 1400 行里只有 1277 个")
+    lines.append("> 唯一文件（123 张长尾被重复计权）。修复后为 1400 个唯一文件，**绝对值需在 GPU 上重测**。")
+    lines.append("> 趋势结论（峰值在 r=0.75、r=1.00 反而回落）不受该问题影响。")
     return "\n".join(lines) + "\n"
 
 

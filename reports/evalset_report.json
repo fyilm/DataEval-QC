@@ -9,9 +9,9 @@
       "taken": 9
     },
     "blur|indoor|hard": {
-      "available": 17,
-      "quota": 17,
-      "taken": 17
+      "available": 10,
+      "quota": 10,
+      "taken": 10
     },
     "blur|indoor|mid": {
       "available": 13,
@@ -24,9 +24,9 @@
       "taken": 12
     },
     "blur|night|hard": {
-      "available": 23,
-      "quota": 23,
-      "taken": 23
+      "available": 17,
+      "quota": 17,
+      "taken": 17
     },
     "blur|night|mid": {
       "available": 11,
@@ -39,14 +39,14 @@
       "taken": 27
     },
     "blur|outdoor|hard": {
-      "available": 75,
-      "quota": 36,
-      "taken": 36
+      "available": 48,
+      "quota": 42,
+      "taken": 42
     },
     "blur|outdoor|mid": {
       "available": 42,
-      "quota": 36,
-      "taken": 36
+      "quota": 41,
+      "taken": 41
     },
     "dark|indoor|easy": {
       "available": 11,
@@ -54,9 +54,9 @@
       "taken": 11
     },
     "dark|indoor|hard": {
-      "available": 20,
-      "quota": 20,
-      "taken": 20
+      "available": 10,
+      "quota": 10,
+      "taken": 10
     },
     "dark|indoor|mid": {
       "available": 8,
@@ -69,9 +69,9 @@
       "taken": 9
     },
     "dark|night|hard": {
-      "available": 19,
-      "quota": 19,
-      "taken": 19
+      "available": 14,
+      "quota": 14,
+      "taken": 14
     },
     "dark|night|mid": {
       "available": 13,
@@ -84,9 +84,9 @@
       "taken": 24
     },
     "dark|outdoor|hard": {
-      "available": 70,
-      "quota": 36,
-      "taken": 36
+      "available": 45,
+      "quota": 42,
+      "taken": 42
     },
     "dark|outdoor|mid": {
       "available": 33,
@@ -130,13 +130,13 @@
     },
     "low_res|outdoor|hard": {
       "available": 58,
-      "quota": 36,
-      "taken": 36
+      "quota": 42,
+      "taken": 42
     },
     "low_res|outdoor|mid": {
       "available": 45,
-      "quota": 36,
-      "taken": 36
+      "quota": 42,
+      "taken": 42
     },
     "noise|indoor|easy": {
       "available": 8,
@@ -180,23 +180,23 @@
     },
     "noise|outdoor|mid": {
       "available": 37,
-      "quota": 36,
-      "taken": 36
-    },
-    "normal|indoor|none": {
-      "available": 47,
       "quota": 37,
       "taken": 37
     },
+    "normal|indoor|none": {
+      "available": 47,
+      "quota": 42,
+      "taken": 42
+    },
     "normal|night|none": {
       "available": 54,
-      "quota": 36,
-      "taken": 36
+      "quota": 42,
+      "taken": 42
     },
     "normal|outdoor|none": {
       "available": 163,
-      "quota": 36,
-      "taken": 36
+      "quota": 42,
+      "taken": 42
     },
     "occlusion|indoor|easy": {
       "available": 10,
@@ -204,9 +204,9 @@
       "taken": 10
     },
     "occlusion|indoor|hard": {
-      "available": 21,
-      "quota": 21,
-      "taken": 21
+      "available": 11,
+      "quota": 11,
+      "taken": 11
     },
     "occlusion|indoor|mid": {
       "available": 9,
@@ -219,9 +219,9 @@
       "taken": 18
     },
     "occlusion|night|hard": {
-      "available": 29,
-      "quota": 29,
-      "taken": 29
+      "available": 15,
+      "quota": 15,
+      "taken": 15
     },
     "occlusion|night|mid": {
       "available": 16,
@@ -234,14 +234,14 @@
       "taken": 33
     },
     "occlusion|outdoor|hard": {
-      "available": 114,
-      "quota": 36,
-      "taken": 36
+      "available": 58,
+      "quota": 42,
+      "taken": 42
     },
     "occlusion|outdoor|mid": {
       "available": 54,
-      "quota": 36,
-      "taken": 36
+      "quota": 41,
+      "taken": 41
     },
     "over_expo|indoor|easy": {
       "available": 10,
@@ -249,9 +249,9 @@
       "taken": 10
     },
     "over_expo|indoor|hard": {
-      "available": 27,
-      "quota": 27,
-      "taken": 27
+      "available": 18,
+      "quota": 18,
+      "taken": 18
     },
     "over_expo|indoor|mid": {
       "available": 13,
@@ -264,9 +264,9 @@
       "taken": 8
     },
     "over_expo|night|hard": {
-      "available": 20,
-      "quota": 20,
-      "taken": 20
+      "available": 13,
+      "quota": 13,
+      "taken": 13
     },
     "over_expo|night|mid": {
       "available": 15,
@@ -275,22 +275,23 @@
     },
     "over_expo|outdoor|easy": {
       "available": 37,
-      "quota": 36,
-      "taken": 36
+      "quota": 37,
+      "taken": 37
     },
     "over_expo|outdoor|hard": {
-      "available": 63,
-      "quota": 36,
-      "taken": 36
+      "available": 39,
+      "quota": 39,
+      "taken": 39
     },
     "over_expo|outdoor|mid": {
       "available": 46,
-      "quota": 36,
-      "taken": 36
+      "quota": 42,
+      "taken": 42
     }
   },
   "underfilled_cells": {},
   "seed": 42,
   "longtail": 200,
-  "total": 1400
+  "total": 1400,
+  "unique_files": 1400
 }
